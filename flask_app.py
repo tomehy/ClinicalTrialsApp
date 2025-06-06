@@ -21,24 +21,35 @@ DB_CONFIG = {
 
 # --- NEW ENDPOINT: ClinicalTrials.gov REST API Proxy ---
 
+# flask_app.py
+import requests
+from flask import request, jsonify
+
 @app.route('/api/proxy_trials')
 def proxy_trials():
-    import requests
-    from flask import request, jsonify
-
     query = request.args.get('query', '')
-    api_url = (
-        "https://clinicaltrials.gov/api/v2/studies"
-        f"?query.term={query}&filters.study_phase=Phase%203&page_size=20"
-    )
-
     try:
-        response = requests.get(api_url)
+        # Correct API URL and format
+        api_url = "https://clinicaltrials.gov/api/v2/studies"
+        params = {
+            "query.term": query,
+            "query.fields": "BriefTitle,Phase,OverallStatus,NCTId",
+            "page_size": 20
+        }
+        response = requests.get(api_url, params=params)
         response.raise_for_status()
-        print(f"🔍 Fetching from ClinicalTrials.gov: {api_url}")
-        return jsonify(response.json())
-    except requests.exceptions.RequestException as e:
+        data = response.json()
+
+        # Filter results manually for Phase 3
+        phase3_studies = [
+            study for study in data.get('studies', [])
+            if study.get('phase', '').lower() == 'phase 3'
+        ]
+
+        return jsonify({"studies": phase3_studies})
+    except Exception as e:
         return jsonify({"error": f"ClinicalTrials.gov API error: {str(e)}"}), 502
+
 
 
 
