@@ -25,26 +25,29 @@ DB_CONFIG = {
 def proxy_trials():
     query = request.args.get('query', '')
     try:
-        # Construct API request
         base_url = 'https://clinicaltrials.gov/api/v2/studies'
         params = {
             'query': query,
-            'page_size': 50,
-            'fields': 'brief_title,nct_id,overall_status,phase'
+            'page_size': 50
         }
 
         response = requests.get(base_url, params=params)
         response.raise_for_status()
 
-        # Filter Phase 3 studies manually
         data = response.json()
         all_studies = data.get('studies', [])
-        phase3_studies = [s for s in all_studies if s.get('phase', '').lower() == 'phase 3']
+
+        # Manually filter only Phase 3 trials
+        phase3_studies = [
+            s for s in all_studies
+            if s.get('protocol_section', {}).get('design_module', {}).get('phase', '').lower() == 'phase 3'
+        ]
 
         return jsonify({'studies': phase3_studies})
 
     except requests.exceptions.RequestException as e:
         return jsonify({'error': f'ClinicalTrials.gov API error: {str(e)}'}), 502
+
 
 
 
