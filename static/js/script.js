@@ -1645,45 +1645,54 @@
    * @dev Performs the clinical trial search using the ClinicalTrials.gov API.
    */
   async function performClinicalTrialApiSearch() {
-  const query = document.getElementById('apiSearchButton').value.trim();
+  const query = document.getElementById('apiOfficialNameInput')?.value.trim();
   if (!query) return;
 
-  fetch(`/api/proxy_trials?query=${encodeURIComponent(query)}`)
-    .then(res => res.json())
-    .then(data => {
-      const trials = data.studies;
+  apiLoadingIndicator.classList.remove('hidden');
+  apiResultsContainer.innerHTML = '';
 
-      // Extract relevant info from nested structure
-      const formattedTrials = trials.map(study => {
-        const ps = study.protocolSection || {};
-        return {
-          title: ps.identificationModule?.briefTitle || 'N/A',
-          nctId: ps.identificationModule?.nctId || 'N/A',
-          status: ps.statusModule?.overallStatus || 'Unknown',
-          phase: ps.designModule?.phases?.join(', ') || 'N/A'
-        };
-      });
+  try {
+    const response = await fetch(`/api/proxy_trials?query=${encodeURIComponent(query)}`);
+    const data = await response.json();
+    const trials = data.studies || [];
 
-      renderTrials(formattedTrials);
-    })
-    .catch(err => {
-      console.error('❌ API Fetch Error:', err);
-      alert(`Failed to fetch clinical trials: ${err.message}`);
+    const formattedTrials = trials.map(study => {
+      const ps = study.protocolSection || {};
+      return {
+        title: ps.identificationModule?.briefTitle || 'N/A',
+        nctId: ps.identificationModule?.nctId || 'N/A',
+        status: ps.statusModule?.overallStatus || 'Unknown',
+        summary: ps.descriptionModule?.briefSummary || 'No brief summary available.'
+      };
     });
+
+    renderTrials(formattedTrials);
+  } catch (err) {
+    console.error('❌ API Fetch Error:', err);
+    alert(`Failed to fetch clinical trials: ${err.message}`);
+  } finally {
+    apiLoadingIndicator.classList.add('hidden');
+  }
 }
 
+
 function renderTrials(trials) {
-  const container = document.getElementById('resultsContainer');
+  const container = document.getElementById('apiResultsContainer');
   container.innerHTML = '';
+
+  if (!trials.length) {
+    container.innerHTML = '<p class="text-center text-gray-500">No trials found.</p>';
+    return;
+  }
 
   trials.forEach(t => {
     const card = document.createElement('div');
-    card.className = 'trial-card';
+    card.className = 'bg-gray-100 p-4 rounded-lg shadow';
     card.innerHTML = `
-      <h3>${t.title}</h3>
-      <p><strong>NCT ID:</strong> ${t.nctId}</p>
-      <p><strong>Status:</strong> ${t.status}</p>
-      <p><strong>Phase:</strong> ${t.phase}</p>
+      <h3 class="text-lg font-bold text-green-700 mb-1">${t.title}</h3>
+      <p class="text-sm"><strong>NCT ID:</strong> ${t.nctId}</p>
+      <p class="text-sm"><strong>Status:</strong> ${t.status}</p>
+      <p class="text-sm text-gray-700 mt-2">${t.summary}</p>
     `;
     container.appendChild(card);
   });
