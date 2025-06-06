@@ -24,13 +24,11 @@ DB_CONFIG = {
 @app.route('/api/proxy_trials')
 def proxy_trials():
     query = request.args.get('query')
+    api_url = (
+        "https://clinicaltrials.gov/api/v2/studies"
+        f"?query.term={query}&filters.study_phase=Phase%203&page_size=20"
+    )
     try:
-        # Properly formatted query string
-        api_url = (
-            "https://clinicaltrials.gov/api/v2/studies?"
-            f"query.term={query}+Phase+3&"
-            "page_size=20"
-        )
         response = requests.get(api_url)
         response.raise_for_status()
         return jsonify(response.json())
