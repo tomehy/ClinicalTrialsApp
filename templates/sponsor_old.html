@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsor Dashboard</title>
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/sponsor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="min-h-screen flex flex-col items-center py-10 px-4 bg-gray-100 text-gray-800 font-sans">
+    <div class="w-full max-w-6xl">
+        <div id="connectionStatus" class="flex items-center justify-between w-full p-2 rounded">
+
+            <div class="flex items-center bg-gray-800 bg-opacity-50 space-x-2">
+                <span id="statusIndicator" class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></span>
+                <p id="connectedWallet" class="text-sm text-green-200">Disconnected</p>
+            </div>
+        </div>
+        <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 rounded-xl shadow-lg mb-8 flex flex-col sm:flex-row items-center justify-between">
+            <div class="flex items-center mb-4 sm:mb-0">
+                <img src="/static/images/logo_new.png" alt="Logo" class="h-32 w-auto mr-4">
+
+                <span class="text-2xl font-bold">Sponsor Dashboard</span>
+            </div>
+            <div class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                <nav>
+                    <ul class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                        <li><a href="#reports" class="hover:text-blue-200 transition-colors duration-200 flex items-center"><i class="fas fa-chart-bar mr-2"></i>Reports</a></li>
+                        <li><a href="#messages" class="hover:text-blue-200 transition-colors duration-200 flex items-center"><i class="fas fa-envelope mr-2"></i>Messages</a></li>
+                        <li><a href="#support" class="hover:text-blue-200 transition-colors duration-200 flex items-center"><i class="fas fa-life-ring mr-2"></i>Support</a></li>
+                    </ul>
+                </nav>
+
+            </div>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+
+            <section class="card p-6 rounded-xl shadow-md bg-white col-span-full lg:col-span-1">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-8">Create New Clinical Trial</h2>
+                <input type="text" id="newTrialTitle" placeholder="Trial Title" class="w-full mb-3 p-3 border rounded-lg focus:ring focus:ring-blue-200">
+                <input type="text" id="newTrialPhase" placeholder="Phase (e.g., Phase 3)" class="w-full mb-3 p-3 border rounded-lg focus:ring focus:ring-blue-200">
+                <input type="text" id="newTrialCondition" placeholder="Condition (e.g., Diabetes)" class="w-full mb-3 p-3 border rounded-lg focus:ring focus:ring-blue-200">
+                <input type="text" id="newTrialLocation" placeholder="Location (e.g., Global)" class="w-full mb-4 p-3 border rounded-lg focus:ring focus:ring-blue-200">
+                <button id="createTrialBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200">Create Trial</button>
+                <p id="newTrialAddress" class="text-sm text-gray-600 mt-3"></p>
+            </section>
+
+            <section class="card p-6 rounded-xl shadow-md bg-white col-span-full lg:col-span-1">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-8">Manage Existing Trial</h2>
+                <select id="selectTrialToManage" class="w-full mb-4 p-3 border rounded-lg focus:ring focus:ring-blue-200">
+                    <option value="">Select a Trial</option>
+                </select>
+                <div class="flex flex-col sm:flex-row justify-between space-y-4 sm:space-y-0 sm:space-x-4">
+                    <button id="comingSoon" class="w-full sm:w-1/2 bg-gray-300 hover:bg-gray-600 text-white font-semibold py-3 rounded-lg transition duration-200">Coming Soon</button>
+                    <button id="deactivateTrialBtn" class="w-full sm:w-1/2 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg transition duration-200">Deactivate Trial</button>
+                </div>
+            </section>
+
+            <section class="card p-6 rounded-xl shadow-md bg-white col-span-full xl:col-span-1">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-8">Assign Doctor to Trial</h2>
+                <select id="assignTrialSelect" class="w-full mb-3 p-3 border rounded-lg focus:ring focus:ring-blue-200">
+                    <option value="">Select a Trial</option>
+                </select>
+                <select id="assignDoctorSelect" class="w-full mb-4 p-3 border rounded-lg focus:ring focus:ring-blue-200">
+                    <option value="">Select an Approved Doctor</option>
+                </select>
+                <button id="assignDoctorToTrialBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200">Assign Doctor</button>
+            </section>
+
+            <section class="card p-6 rounded-xl shadow-md bg-white col-span-full">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-8">Pending Doctor Requests</h2>
+                <div class="overflow-x-auto">
+                    <table class="mb-4 w-full text-sm">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 border-b text-left">Address</th>
+                                <th class="py-2 px-4 border-b text-left">Name</th>
+                                <th class="py-2 px-4 border-b text-left">License ID</th>
+                                <th class="py-2 px-4 border-b text-left">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pendingDoctorsTableBody">
+                            <tr><td colspan="4" class="text-center text-gray-500 py-4">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button id="refreshPendingDoctorsBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200 flex items-center justify-center">
+                    <i class="fas fa-sync-alt mr-2"></i>Refresh Pending Requests
+                </button>
+                <span id="lastSyncPendingDoctors" class="text-xs text-gray-500 mt-2 block"></span>
+            </section>
+
+            <section class="card p-6 rounded-xl shadow-md bg-white col-span-full">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-8">All Clinical Trials</h2>
+                <div class="overflow-x-auto">
+                    <table class="mb-4 w-full text-sm">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 border-b text-left">ID</th>
+                                <th class="py-2 px-4 border-b text-left">Title</th>
+                                <th class="py-2 px-4 border-b text-left">Manager</th>
+                                <th class="py-2 px-4 border-b text-left">Patients</th>
+                                <th class="py-2 px-4 border-b text-left">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allTrialsTableBody">
+                            <tr><td colspan="5" class="text-center text-gray-500 py-4">Loading all trials...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button id="refreshAllTrialsBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200 flex items-center justify-center">
+                    <i class="fas fa-sync-alt mr-2"></i>Refresh All Trials
+                </button>
+                <span id="lastSyncAllTrials" class="text-xs text-gray-500 mt-2 block"></span>
+            </section>
+
+            <section class="card p-6 rounded-xl shadow-md bg-white col-span-full">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-8">Deactivated Clinical Trials</h2>
+                <div class="overflow-x-auto">
+                    <table class="mb-4 w-full text-sm">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 border-b text-left">ID</th>
+                                <th class="py-2 px-4 border-b text-left">Title</th>
+                                <th class="py-2 px-4 border-b text-left">Manager</th>
+                                <th class="py-2 px-4 border-b text-left">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deactivatedTrialsTableBody">
+                            <tr><td colspan="4" class="text-center text-gray-500 py-4">Loading deactivated trials...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button id="refreshDeactivatedTrialsBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200 flex items-center justify-center">
+                    <i class="fas fa-sync-alt mr-2"></i>Refresh Deactivated Trials
+                </button>
+                <span id="lastSyncdeactivatedTrials" class="text-xs text-gray-500 mt-2 block"></span>
+            </section>
+
+            <section class="card p-6 rounded-xl shadow-md bg-white col-span-full">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-8">Registered Doctors</h2>
+                <div class="overflow-x-auto">
+                    <table class="mb-4 w-full text-sm">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 border-b text-left">Address</th>
+                                <th class="py-2 px-4 border-b text-left">Name</th>
+                                <th class="py-2 px-4 border-b text-left">License ID</th>
+                                <th class="py-2 px-4 border-b text-left">Approved</th>
+                            </tr>
+                        </thead>
+                        <tbody id="registeredDoctorsTableBody">
+                            <tr><td colspan="4" class="text-center text-gray-500 py-4">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button id="refreshRegisteredDoctorsBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200 flex items-center justify-center">
+                    <i class="fas fa-sync-alt mr-2"></i>Refresh Registered Doctors
+                </button>
+                <span id="lastSyncRegisteredDoctors" class="text-xs text-gray-500 mt-2 block"></span>
+            </section>
+
+            <section class="card p-6 rounded-xl shadow-md bg-white col-span-full">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-8">Registered Patients</h2>
+                <div class="overflow-x-auto">
+                    <table class="mb-4 w-full text-sm">
+                        <thead>
+                            <tr>
+                                <th>Address</th>
+                                <th>Name</th>
+                                <th>Trials Joined</th>
+                                <th>Data Hash</th>
+                            </tr>
+                        </thead>
+                        <tbody id="registeredPatientsTableBody">
+                            <tr><td colspan="4" class="text-center text-gray-500 py-4">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button id="refreshRegisteredPatientsBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200 flex items-center justify-center">
+                    <i class="fas fa-sync-alt mr-2"></i>Refresh Registered Patients
+                </button>
+                <span id="lastSyncRegisteredPatients" class="text-xs text-gray-500 mt-2 block"></span>
+            </section>
+
+        </main>
+
+        <footer class="mt-10 text-center text-gray-600 text-sm">
+            <p id="copyright-note">&copy; Group 4 Decentralized Clinical Trials System. All rights reserved.</p>
+            <p><a href="/" class="text-blue-600 hover:underline">Back to Home</a></p>
+        </footer>
+    </div>
+
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content bg-white p-6 rounded-xl shadow-lg">
+            <span class="close-button text-gray-500 hover:text-gray-800">&times;</span>
+            <p class="text-lg font-semibold mb-4">Are you sure you want to deactivated this trial?</p>
+            <p class="text-sm text-red-600 mb-6">This action will mark the trial as non-existent on the blockchain.</p>
+            <div class="flex justify-center space-x-4">
+                <button id="confirmDeactivateBtn" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">Confirm Deactivation</button>
+                <button id="cancelDeactivateBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-3 px-6 rounded-lg transition duration-200">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script src="/static/js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('confirmationModal').style.display = 'none';
+
+            // Call connectWallet, which in turn calls updateConnectionStatus from script.js
+            await connectWallet();
+
+            document.getElementById('createTrialBtn').addEventListener('click', createTrial);
+
+            document.getElementById('deactivateTrialBtn').addEventListener('click', showDeactivateConfirmation);
+            document.getElementById('comingSoon').addEventListener('click', () => alert("This is just a placehlder"));
+
+            document.querySelector('#confirmationModal .close-button').addEventListener('click', hideDeactivateConfirmation);
+            document.getElementById('cancelDeactivateBtn').addEventListener('click', hideDeactivateConfirmation);
+            document.getElementById('confirmDeactivateBtn').addEventListener('click', deactivateTrial);
+
+            document.getElementById('assignDoctorToTrialBtn').addEventListener('click', assignDoctorToTrial);
+
+            document.getElementById('refreshPendingDoctorsBtn').addEventListener('click', loadPendingDoctorRequests);
+            document.getElementById('refreshAllTrialsBtn').addEventListener('click', loadAllTrialsForSponsor);
+            document.getElementById('refreshDeactivatedTrialsBtn').addEventListener('click', loadDeactivatedTrialsForSponsor); // New refresh button
+            document.getElementById('refreshRegisteredDoctorsBtn').addEventListener('click', loadRegisteredDoctors);
+            document.getElementById('refreshRegisteredPatientsBtn').addEventListener('click', loadRegisteredPatients);
+
+            // Initial load and sync status check
+            loadPendingDoctorRequests();
+            loadAllTrialsForSponsor();
+            loadDeactivatedTrialsForSponsor(); // Load deactivated trials on startup
+            loadRegisteredDoctors();
+            loadRegisteredPatients();
+
+            populateTrialManagementDropdowns();
+            populateAssignDoctorDropdowns();
+
+            // Set interval to check sync status every 10 seconds
+            setInterval(checkSyncStatusAndFlash, 10 * 1000);
+
+            // Update copyright year dynamically
+            const currentYear = new Date().getFullYear();
+            const copyrightElement = document.getElementById('copyright-note');
+            if (copyrightElement) {
+                copyrightElement.textContent = `© ${currentYear} Group 4 Decentralized Clinical Trials System. All rights reserved.`;
+            }
+        });
+
+        let trialIdToDeactivate = null;
+
+        function showDeactivateConfirmation() {
+            const selectedTrialId = document.getElementById('selectTrialToManage').value;
+            if (!selectedTrialId) {
+                alert("Please select a trial to deactivated.");
+                return;
+            }
+            trialIdToDeactivate = selectedTrialId;
+            document.getElementById('confirmationModal').style.display = 'flex';
+        }
+
+        function hideDeactivateConfirmation() {
+            document.getElementById('confirmationModal').style.display = 'none';
+            trialIdToDeactivate = null;
+        }
+    </script>
+</body>
+</html>

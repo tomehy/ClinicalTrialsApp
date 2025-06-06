@@ -1,0 +1,57 @@
+/* No specific styles needed here if all are handled by Tailwind in sponsor.html */
+/* Keeping body font-family as a fallback if not set by Tailwind config */
+body {
+    font-family: 'Inter', sans-serif; /* Ensure Inter font is applied */
+}
+
+/* Custom modal styles that are not directly Tailwind utilities */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+}
+.modal-content {
+    background-color: #fefefe; /* This is now bg-white in HTML */
+    margin: auto;
+    padding: 20px; /* This is now p-6 in HTML */
+    border: 1px solid #888; /* This is now border rounded-xl shadow-lg in HTML */
+    width: 80%;
+    max-width: 500px;
+    border-radius: 12px; /* This is now rounded-xl in HTML */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* This is now shadow-lg in HTML */
+    text-align: center;
+}
+.close-button {
+    color: #aaa; /* This is now text-gray-500 in HTML */
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close-button:hover,
+.close-button:focus {
+    color: black; /* This is now hover:text-gray-800 in HTML */
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Custom table styles if not fully covered by Tailwind */
+table {
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #e0e0e0; /* Similar to Tailwind's border border-gray-300 */
+}
+th {
+    background-color: #f8f8f8; /* Similar to Tailwind's bg-gray-50 */
+}
+tr:nth-child(even) {
+    background-color: #fcfcfc; /* Similar to Tailwind's bg-gray-50 or bg-white */
+}

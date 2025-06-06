@@ -1,0 +1,19 @@
+/* No specific styles needed here if all are handled by Tailwind in patient.html */
+/* Keeping body font-family as a fallback if not set by Tailwind config */
+body {
+    font-family: 'Inter', sans-serif; /* Ensure Inter font is applied */
+}
+
+/* Custom table styles if not fully covered by Tailwind */
+table {
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #e0e0e0; /* Similar to Tailwind's border border-gray-300 */
+}
+th {
+    background-color: #f8f8f8; /* Similar to Tailwind's bg-gray-50 */
+}
+tr:nth-child(even) {
+    background-color: #fcfcfc; /* Similar to Tailwind's bg-gray-50 or bg-white */
+}

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsor Dashboard</title>
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/css/sponsor.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            position: relative;
+            max-width: 500px;
+            width: 90%;
+        }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+        .close-button:hover, .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-10 px-4 bg-gray-100 text-gray-800 font-sans">
+    <div class="w-full max-w-6xl">
+        <!-- existing header and dashboard UI ... -->
+
+        <!-- UPDATED SEARCH SECTION -->
+        <section class="card p-6 rounded-xl shadow-md bg-white col-span-full">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-8">Search Phase 3 Clinical Trials</h2>
+            <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                <input
+                    type="text"
+                    id="apiOfficialNameInput"
+                    placeholder="Enter Drug or Condition Name (e.g., 'Diabetes')"
+                    class="flex-grow p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                    id="apiSearchButton"
+                    class="bg-green-600 text-white p-3 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-300 ease-in-out shadow-md"
+                >
+                    Search Phase 3 Trials
+                </button>
+            </div>
+
+            <div id="apiLoadingIndicator" class="hidden text-center text-green-600 font-semibold mb-4">
+                Loading clinical trials from API...
+            </div>
+
+            <div id="apiResultsContainer" class="space-y-4">
+                <p id="apiInitialMessage" class="text-center text-gray-500">Enter a drug or condition and click 'Search Phase 3 Trials' to begin.</p>
+            </div>
+        </section>
+
+        <!-- remaining sections for trial management -->
+
+    </div>
+
+    <!-- Confirmation and message modals -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content bg-white p-6 rounded-xl shadow-lg">
+            <span class="close-button text-gray-500 hover:text-gray-800">&times;</span>
+            <p class="text-lg font-semibold mb-4">Are you sure you want to deactivated this trial?</p>
+            <p class="text-sm text-red-600 mb-6">This action will mark the trial as non-existent on the blockchain.</p>
+            <div class="flex justify-center space-x-4">
+                <button id="confirmDeleteBtn" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">Confirm Deactivation</button>
+                <button id="cancelDeleteBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-3 px-6 rounded-lg transition duration-200">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="messageModal" class="modal">
+        <div class="modal-content bg-white p-6 rounded-lg shadow-xl max-w-sm w-full">
+            <span class="close-button text-gray-500 hover:text-gray-800" onclick="hideModal()">&times;</span>
+            <h3 id="modalTitle" class="text-lg font-bold mb-4"></h3>
+            <p id="modalMessage" class="text-gray-700 mb-6"></p>
+            <button id="closeModalButton" class="bg-blue-600 text-white p-2 rounded-md w-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" onclick="hideModal()">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>

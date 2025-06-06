@@ -1,0 +1,21 @@
+/* No specific styles needed here if all are handled by Tailwind in index.html */
+/* Keeping body font-family as a fallback if not set by Tailwind config */
+body {
+    font-family: 'Inter', sans-serif; /* Ensure Inter font is applied */
+}
+
+/* Styles for the userPanel and its children, if not fully covered by Tailwind */
+#userPanel p {
+    margin-bottom: 15px; /* Tailwind's mb-4 is 16px, so this is similar */
+    font-size: 1.1em; /* Tailwind's text-lg is 1.125rem (18px), similar */
+}
+#userPanel button {
+    margin: 5px; /* Tailwind's m-1 is 4px, m-2 is 8px */
+}
+input[type="text"] {
+    width: calc(100% - 22px); /* Specific calculation, hard to replicate with pure Tailwind */
+    padding: 10px; /* Tailwind's p-2.5 is 10px */
+    margin-bottom: 10px; /* Tailwind's mb-2.5 is 10px */
+    border: 1px solid #ccc; /* Tailwind's border border-gray-300 */
+    border-radius: 4px; /* Tailwind's rounded-md */
+}
