@@ -1645,7 +1645,7 @@
    * @dev Performs the clinical trial search using the ClinicalTrials.gov API.
    */
   async function performClinicalTrialApiSearch() {
-  const query = document.getElementById('searchInput').value.trim();
+  const query = document.getElementById('apiSearchButton').value.trim();
   if (!query) return;
 
   fetch(`/api/proxy_trials?query=${encodeURIComponent(query)}`)
@@ -1813,3 +1813,70 @@ function renderTrials(trials) {
           }
       }
   });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const apiSearchButton = document.getElementById('apiSearchButton');
+  const apiOfficialNameInput = document.getElementById('apiOfficialNameInput');
+  const apiLoadingIndicator = document.getElementById('apiLoadingIndicator');
+  const apiResultsContainer = document.getElementById('apiResultsContainer');
+  const apiInitialMessage = document.getElementById('apiInitialMessage');
+
+  apiSearchButton.addEventListener('click', async () => {
+    const query = apiOfficialNameInput?.value.trim();
+
+    if (!query) {
+      showModal('Input Required', 'Please enter a drug or condition name.');
+      return;
+    }
+
+    apiLoadingIndicator.classList.remove('hidden');
+    apiResultsContainer.innerHTML = '';
+    apiInitialMessage.classList.add('hidden');
+    apiSearchButton.disabled = true;
+
+    try {
+      const response = await fetch(`/api/proxy_trials?query=${encodeURIComponent(query)}`);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`API Error: ${response.status} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      const studies = data.studies || [];
+
+      if (studies.length === 0) {
+        apiResultsContainer.innerHTML = '<p class="text-center text-gray-600">No Phase 3 trials found for the given query.</p>';
+      } else {
+        apiResultsContainer.innerHTML = studies.map(study => `
+          <div class="border p-4 rounded-md shadow-sm bg-gray-50">
+            <h3 class="font-bold text-lg">${study.brief_title}</h3>
+            <p class="text-sm text-gray-700">NCT ID: ${study.nct_id}</p>
+            <p class="text-sm text-gray-700">Status: ${study.overall_status}</p>
+          </div>
+        `).join('');
+      }
+
+    } catch (error) {
+      console.error('❌ API Fetch Error:', error);
+      showModal('API Search Error', `Failed to fetch clinical trials: ${error.message}`);
+      apiResultsContainer.innerHTML = '<p class="text-center text-red-600">An error occurred. Please try again later.</p>';
+      apiInitialMessage.classList.remove('hidden');
+    } finally {
+      apiLoadingIndicator.classList.add('hidden');
+      apiSearchButton.disabled = false;
+    }
+  });
+
+  function showModal(title, message) {
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalMessage').textContent = message;
+    document.getElementById('messageModal').style.display = 'flex';
+  }
+
+  function hideModal() {
+    document.getElementById('messageModal').style.display = 'none';
+  }
+
+  window.hideModal = hideModal;
+});
+
