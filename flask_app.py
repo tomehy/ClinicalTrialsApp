@@ -28,7 +28,7 @@ def proxy_trials():
         # Construct API request
         base_url = 'https://clinicaltrials.gov/api/v2/studies'
         params = {
-            'query.term': query,
+            'query': query,
             'page_size': 50,
             'fields': 'brief_title,nct_id,overall_status,phase'
         }
