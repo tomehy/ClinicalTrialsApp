@@ -1659,9 +1659,9 @@
     const formattedTrials = trials
       .filter(study => {
         const ps = study.protocolSection || {};
-        const status = ps.statusModule?.overallStatus?.toUpperCase() || '';
+        const status = (ps.statusModule?.overallStatus || '').toUpperCase();
         const phases = ps.designModule?.phases || [];
-        return status === 'RECRUITING' && phases.includes('PHASE3');
+        return phases.includes('PHASE3') && !['COMPLETED', 'TERMINATED'].includes(status);
       })
       .map(study => {
         const ps = study.protocolSection || {};
