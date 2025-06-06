@@ -21,32 +21,28 @@ DB_CONFIG = {
 
 # --- NEW ENDPOINT: ClinicalTrials.gov REST API Proxy ---
 
-# Alternate route using ClinicalTrials.gov v1 API
+
 @app.route('/api/proxy_trials')
 def proxy_trials():
-    query = request.args.get('query', '').strip()
-    if not query:
-        return jsonify({'error': 'Missing query parameter'}), 400
-
+    query = request.args.get('query', '')
     try:
-        v1_url = "https://clinicaltrials.gov/api/query/full_studies"
+        base_url = 'https://clinicaltrials.gov/api/v2/studies'
         params = {
-            'expr': f"{query} AND phase:3",
-            'min_rnk': 1,
-            'max_rnk': 20,
-            'fmt': 'json'
+            'query.term': f"{query} Phase 3",
+            'pageSize': 20  # use the correct camelCase param
         }
 
-        response = requests.get(v1_url, params=params)
+        response = requests.get(base_url, params=params)
         response.raise_for_status()
 
-        full_data = response.json()
-        studies = full_data.get("FullStudiesResponse", {}).get("FullStudies", [])
+        data = response.json()
+        studies = data.get('studies', [])
 
         return jsonify({'studies': studies})
 
     except requests.exceptions.RequestException as e:
         return jsonify({'error': f'ClinicalTrials.gov API error: {str(e)}'}), 502
+
 
 
 
