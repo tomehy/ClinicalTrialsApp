@@ -23,26 +23,19 @@ DB_CONFIG = {
 
 @app.route('/api/proxy_trials')
 def proxy_trials():
-    query = request.args.get('query', '').strip()
-    if not query:
-        return jsonify({"error": "Missing or empty 'query' parameter"}), 400
-
+    query = request.args.get('query')
     try:
-        api_url = "https://beta.clinicaltrials.gov/api/v2/studies"
-        params = {
-            "query.term": query,
-            "filters.study_phase": "Phase 3",
-            "page_size": 20
-        }
-
-        response = requests.get(api_url, params=params, timeout=10)
-        response.raise_for_status()  # Raise exception for HTTP errors
-
+        # Properly formatted query string
+        api_url = (
+            "https://clinicaltrials.gov/api/v2/studies?"
+            f"query.term={query}+Phase+3&"
+            "page_size=20"
+        )
+        response = requests.get(api_url)
+        response.raise_for_status()
         return jsonify(response.json())
     except requests.exceptions.RequestException as e:
         return jsonify({"error": f"ClinicalTrials.gov API error: {str(e)}"}), 502
-    except Exception as e:
-        return jsonify({"error": f"Internal server error: {str(e)}"}), 500
 
 
 
