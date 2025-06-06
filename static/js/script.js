@@ -1656,15 +1656,23 @@
     const data = await response.json();
     const trials = data.studies || [];
 
-    const formattedTrials = trials.map(study => {
-      const ps = study.protocolSection || {};
-      return {
-        title: ps.identificationModule?.briefTitle || 'N/A',
-        nctId: ps.identificationModule?.nctId || 'N/A',
-        status: ps.statusModule?.overallStatus || 'Unknown',
-        summary: ps.descriptionModule?.briefSummary || 'No brief summary available.'
-      };
-    });
+    const formattedTrials = trials
+      .filter(study => {
+        const ps = study.protocolSection || {};
+        const status = ps.statusModule?.overallStatus?.toUpperCase() || '';
+        const phases = ps.designModule?.phases || [];
+        return status === 'RECRUITING' && phases.includes('PHASE3');
+      })
+      .map(study => {
+        const ps = study.protocolSection || {};
+        return {
+          title: ps.identificationModule?.briefTitle || 'N/A',
+          nctId: ps.identificationModule?.nctId || 'N/A',
+          status: ps.statusModule?.overallStatus || 'Unknown',
+          phase: ps.designModule?.phases?.join(', ') || 'N/A',
+          summary: ps.descriptionModule?.briefSummary || 'No brief summary available.'
+        };
+      });
 
     renderTrials(formattedTrials);
   } catch (err) {
