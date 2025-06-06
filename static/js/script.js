@@ -1645,43 +1645,48 @@
    * @dev Performs the clinical trial search using the ClinicalTrials.gov API.
    */
   async function performClinicalTrialApiSearch() {
-    const officialName = apiOfficialNameInput.value.trim();
+  const query = document.getElementById('searchInput').value.trim();
+  if (!query) return;
 
-    if (!officialName) {
-        showModal('Input Required', 'Please enter a drug or condition name.');
-        return;
-    }
+  fetch(`/api/proxy_trials?query=${encodeURIComponent(query)}`)
+    .then(res => res.json())
+    .then(data => {
+      const trials = data.studies;
 
-    apiLoadingIndicator.classList.remove('hidden');
-    apiResultsContainer.innerHTML = '';
-    apiInitialMessage.classList.add('hidden');
-    apiSearchButton.disabled = true;
+      // Extract relevant info from nested structure
+      const formattedTrials = trials.map(study => {
+        const ps = study.protocolSection || {};
+        return {
+          title: ps.identificationModule?.briefTitle || 'N/A',
+          nctId: ps.identificationModule?.nctId || 'N/A',
+          status: ps.statusModule?.overallStatus || 'Unknown',
+          phase: ps.designModule?.phases?.join(', ') || 'N/A'
+        };
+      });
 
-    try {
-        const encodedName = encodeURIComponent(officialName);
-        const url = `https://clinicaltrialsdapp.onrender.com/api/proxy_trials?query=${encodedName}`;
-        console.log("🔍 Requesting:", url);
+      renderTrials(formattedTrials);
+    })
+    .catch(err => {
+      console.error('❌ API Fetch Error:', err);
+      alert(`Failed to fetch clinical trials: ${err.message}`);
+    });
+}
 
-        const response = await fetch(url);
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`API Error: ${response.status} - ${errorText}`);
-        }
+function renderTrials(trials) {
+  const container = document.getElementById('resultsContainer');
+  container.innerHTML = '';
 
-        const data = await response.json();
-        console.log("✅ Fetched data:", data);
-
-        displayApiResults(data.studies || []);
-
-    } catch (error) {
-        console.error('❌ API Fetch Error:', error);
-        showModal('API Search Error', `Failed to fetch clinical trials: ${error.message}`);
-        apiResultsContainer.innerHTML = '<p class="text-center text-red-600">Could not retrieve trials. Try again later.</p>';
-        apiInitialMessage.classList.remove('hidden');
-    } finally {
-        apiLoadingIndicator.classList.add('hidden');
-        apiSearchButton.disabled = false;
-    }
+  trials.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'trial-card';
+    card.innerHTML = `
+      <h3>${t.title}</h3>
+      <p><strong>NCT ID:</strong> ${t.nctId}</p>
+      <p><strong>Status:</strong> ${t.status}</p>
+      <p><strong>Phase:</strong> ${t.phase}</p>
+    `;
+    container.appendChild(card);
+  });
 }
 
 
