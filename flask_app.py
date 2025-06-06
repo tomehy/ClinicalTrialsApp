@@ -35,6 +35,7 @@ def proxy_trials():
     try:
         response = requests.get(api_url)
         response.raise_for_status()
+        print(f"🔍 Fetching from ClinicalTrials.gov: {api_url}")
         return jsonify(response.json())
     except requests.exceptions.RequestException as e:
         return jsonify({"error": f"ClinicalTrials.gov API error: {str(e)}"}), 502
