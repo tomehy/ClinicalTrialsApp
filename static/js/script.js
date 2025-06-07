@@ -1928,17 +1928,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
       trialDropdown.innerHTML = '<option value="">Select a Trial</option>';
       filtered.forEach(study => {
-        const title = study.protocolSection?.identificationModule?.briefTitle || 'Untitled';
-        const id = study.protocolSection?.identificationModule?.nctId || '';
+        const ps = study.protocolSection || {};
+        const title = ps.identificationModule?.briefTitle || 'Untitled';
+        const id = ps.identificationModule?.nctId || '';
+        const phase = (ps.designModule?.phases || []).join(', ');
+        const condition = ps.conditionsModule?.conditions?.[0] || query;
+
+        const locData = ps.contactsLocationsModule?.locations?.[0];
+        let formattedLocation = 'N/A';
+        if (locData) {
+        const city = locData.city || '';
+        const state = locData.state || '';
+        const country = locData.country || '';
+        formattedLocation = [city, state, country].filter(Boolean).join(', ');
+        }
+
         const option = document.createElement('option');
-        option.value = JSON.stringify({
-          title: title,
-          phase: (study.protocolSection?.designModule?.phases || []).join(', '),
-          condition: study.protocolSection?.conditionsModule?.conditions?.[0] || query
-        });
+        option.value = JSON.stringify({ title, phase, condition, location: formattedLocation });
         option.textContent = `${title} (${id})`;
         trialDropdown.appendChild(option);
       });
+
       trialDropdown.classList.remove('hidden');
     } catch (error) {
       console.error('Error fetching trials:', error);
@@ -1953,7 +1963,9 @@ document.addEventListener('DOMContentLoaded', () => {
     newTrialTitle.value = parsed.title || '';
     newTrialPhase.value = parsed.phase || '';
     newTrialCondition.value = parsed.condition || '';
+    document.getElementById('newTrialLocation').value = parsed.location || '';
   });
+
 });
 
 
