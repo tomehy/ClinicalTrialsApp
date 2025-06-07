@@ -1897,3 +1897,63 @@ document.addEventListener('DOMContentLoaded', () => {
   window.hideModal = hideModal;
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+  const fetchTrialOptionsBtn = document.getElementById('fetchTrialOptionsBtn');
+  const trialSearchInput = document.getElementById('trialSearchInput');
+  const trialDropdown = document.getElementById('trialDropdown');
+  const newTrialTitle = document.getElementById('newTrialTitle');
+  const newTrialPhase = document.getElementById('newTrialPhase');
+  const newTrialCondition = document.getElementById('newTrialCondition');
+
+  fetchTrialOptionsBtn?.addEventListener('click', async () => {
+    const query = trialSearchInput?.value.trim();
+    if (!query) return alert("Please enter a condition to search.");
+
+    try {
+      const res = await fetch(`/api/proxy_trials?query=${encodeURIComponent(query)}`);
+      const data = await res.json();
+
+      const filtered = (data.studies || []).filter(study => {
+        const ps = study.protocolSection || {};
+        const status = (ps.statusModule?.overallStatus || '').toUpperCase();
+        const phases = ps.designModule?.phases || [];
+        return phases.includes('PHASE3') && !['COMPLETED', 'TERMINATED'].includes(status);
+      });
+
+      if (filtered.length === 0) {
+        alert("No Phase 3 trials found for this condition.");
+        trialDropdown.classList.add('hidden');
+        return;
+      }
+
+      trialDropdown.innerHTML = '<option value="">Select a Trial</option>';
+      filtered.forEach(study => {
+        const title = study.protocolSection?.identificationModule?.briefTitle || 'Untitled';
+        const id = study.protocolSection?.identificationModule?.nctId || '';
+        const option = document.createElement('option');
+        option.value = JSON.stringify({
+          title: title,
+          phase: (study.protocolSection?.designModule?.phases || []).join(', '),
+          condition: study.protocolSection?.conditionsModule?.conditions?.[0] || query
+        });
+        option.textContent = `${title} (${id})`;
+        trialDropdown.appendChild(option);
+      });
+      trialDropdown.classList.remove('hidden');
+    } catch (error) {
+      console.error('Error fetching trials:', error);
+      alert("Failed to fetch trial data.");
+    }
+  });
+
+  trialDropdown?.addEventListener('change', () => {
+    const selected = trialDropdown.value;
+    if (!selected) return;
+    const parsed = JSON.parse(selected);
+    newTrialTitle.value = parsed.title || '';
+    newTrialPhase.value = parsed.phase || '';
+    newTrialCondition.value = parsed.condition || '';
+  });
+});
+
+
