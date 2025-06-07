@@ -39,14 +39,20 @@
 
         <main class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
 
-            <section class="card p-6 rounded-xl shadow-md bg-white col-span-full lg:col-span-1">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-8">Create New Clinical Trial</h2>
-                <input type="text" id="newTrialTitle" placeholder="Trial Title" class="w-full mb-3 p-3 border rounded-lg focus:ring focus:ring-blue-200">
-                <input type="text" id="newTrialPhase" placeholder="Phase (e.g., Phase 3)" class="w-full mb-3 p-3 border rounded-lg focus:ring focus:ring-blue-200">
-                <input type="text" id="newTrialCondition" placeholder="Condition (e.g., Diabetes)" class="w-full mb-3 p-3 border rounded-lg focus:ring focus:ring-blue-200">
-                <input type="text" id="newTrialLocation" placeholder="Location (e.g., Global)" class="w-full mb-4 p-3 border rounded-lg focus:ring focus:ring-blue-200">
-                <button id="createTrialBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200">Create Trial</button>
-                <p id="newTrialAddress" class="text-sm text-gray-600 mt-3"></p>
+            <!-- Replace Create New Clinical Trial section -->
+          <section class="card p-6 rounded-xl shadow-md bg-white col-span-full lg:col-span-1">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-8">Create New Clinical Trial</h2>
+            <input type="text" id="trialSearchInput" placeholder="Search condition (e.g., Diabetes)" class="w-full mb-3 p-3 border rounded-lg focus:ring focus:ring-blue-200">
+            <button id="fetchTrialOptionsBtn" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 mb-3 rounded-lg">Search Trials</button>
+            <select id="trialDropdown" class="w-full mb-3 p-3 border rounded-lg hidden">
+              <option value="">Select a Trial</option>
+            </select>
+            <input type="text" id="newTrialTitle" placeholder="Trial Title" class="w-full mb-3 p-3 border rounded-lg">
+            <input type="text" id="newTrialPhase" placeholder="Phase" class="w-full mb-3 p-3 border rounded-lg">
+            <input type="text" id="newTrialCondition" placeholder="Condition" class="w-full mb-3 p-3 border rounded-lg">
+            <input type="text" id="newTrialLocation" placeholder="Location (e.g., Global)" class="w-full mb-4 p-3 border rounded-lg">
+            <button id="createTrialBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200">Create Trial</button>
+            <p id="newTrialAddress" class="text-sm text-gray-600 mt-3"></p>
             </section>
 
             <section class="card p-6 rounded-xl shadow-md bg-white col-span-full lg:col-span-1">
