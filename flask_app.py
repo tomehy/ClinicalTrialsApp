@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
-import psycopg2
+import psycopg2-binary
 import smtplib
 from email.mime.text import MIMEText
 import requests
