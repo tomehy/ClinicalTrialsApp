@@ -12,12 +12,19 @@ app = Flask(__name__)
 CORS(app) # Enable CORS for all routes
 
 # Database Configuration (replace with your actual MySQL credentials)
-DB_CONFIG = {
-    'host': 'tomehyie.mysql.pythonanywhere-services.com', # e.g., 'localhost' or your PythonAnywhere MySQL hostname
-    'user': 'tomehyie', # e.g., 'tomehyie' (as seen in your screenshot)
-    'password': 'MMyy@1983',
-    'database': 'tomehyie$doctors_licenses' # Your database name
-}
+import psycopg2
+
+conn = psycopg2.connect(
+    dbname="clinicaltrialsdb",
+    user="admin",
+    password="TDjsiPLoJGciXKarvTYNkBRpssyPoHPR",
+    host="dpg-d19d44idbo4c73d6d6d0-a.oregon-postgres.render.com",
+    port="5432"
+)
+
+cursor = conn.cursor()
+cursor.execute("SELECT * FROM licenses;")
+results = cursor.fetchall()
 
 # --- NEW ENDPOINT: ClinicalTrials.gov REST API Proxy ---
 
