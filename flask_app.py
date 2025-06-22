@@ -10,7 +10,7 @@ CORS(app)
 
 # --- PostgreSQL Configuration (Render.com) ---
 DB_CONFIG = {
-    "dbname": "clinicaltrialsdb",
+    "dbname": "clinicaltrials_40qi",
     "user": "admin",
     "password": "TDjsiPLoJGciXKarvTYNkBRpssyPoHPR",
     "host": "dpg-d19d44idbo4c73d6d6d0-a.oregon-postgres.render.com",
